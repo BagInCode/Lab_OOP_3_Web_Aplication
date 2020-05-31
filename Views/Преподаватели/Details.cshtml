@@ -1,0 +1,30 @@
+﻿@model WebLab.Преподаватели
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Преподаватели</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Фио)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Фио)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Вуз)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Вуз.НазваниеВуза)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Mail">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

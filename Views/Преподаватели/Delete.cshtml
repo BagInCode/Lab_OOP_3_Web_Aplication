@@ -1,0 +1,39 @@
+﻿@model WebLab.Преподаватели
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Преподаватели</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Фио)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Фио)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Пароль)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Пароль)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Вуз)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Вуз.НазваниеВуза)
+        </dd class>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Mail" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

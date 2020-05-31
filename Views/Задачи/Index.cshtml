@@ -1,0 +1,59 @@
+﻿@model IEnumerable<WebLab.Задачи>
+
+@{
+    ViewData["Title"] = "Задачи";
+}
+
+<h1>Задачи</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Место)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Дата)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Описание)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Пользователь)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Сценарий)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Место)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Дата)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Описание)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Пользователь.Mail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Сценарий.Описание)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
