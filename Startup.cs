@@ -55,7 +55,7 @@ namespace WebLab
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=СтудентЗадача}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
