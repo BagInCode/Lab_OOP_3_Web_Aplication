@@ -57,6 +57,13 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.Преподаватели.Any(d => d.Mail == пользователь.Mail) ||
+                   _context.Студенты.Any(e => e.Mail == пользователь.Mail) ||
+                   _context.Пользователь.Any(f => f.Mail == пользователь.Mail))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Такой почтовый адрес уже зарегестрирован" });
+                }
+
                 int passwordHesh = calcHesh(пользователь.Пароль);
                 пользователь.Пароль = passwordHesh.ToString();
 
@@ -189,6 +196,34 @@ namespace WebLab.Controllers
             }
 
             return result;
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
+        }
+        public async Task<IActionResult> AllTasks(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var пользователь = await _context.Пользователь
+                .FirstOrDefaultAsync(m => m.Mail == id);
+            if (пользователь == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("TasksByUser", "Задачи", new { id = пользователь.Mail});
         }
     }
 }

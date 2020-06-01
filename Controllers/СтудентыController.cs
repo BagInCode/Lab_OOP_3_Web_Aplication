@@ -21,23 +21,8 @@ namespace WebLab.Controllers
         // GET: Студенты
         public async Task<IActionResult> Index()
         {
-            var labOOPContext = _context.Студенты.Include(с => с.Группа);
+            var labOOPContext = _context.Студенты.Include(с => с.Группа).Include(c => c.Группа.Вуз);
             return View(await labOOPContext.ToListAsync());
-        }
-
-        public async Task<IActionResult> StudentsByGroup(int? id, string? name)
-        {
-            if(id == null)
-            {
-                return RedirectToAction("Index", "Группы");
-            }
-
-            ViewBag.CategoryName = name;
-            ViewBag.CategoryId = id;
-
-            var studentsByGroup = _context.Студенты.Where(e => e.ГруппаId == id);
-
-            return View(await studentsByGroup.ToListAsync());
         }
 
         // GET: Студенты/Details/5
@@ -75,6 +60,13 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.Преподаватели.Any(d => d.Mail == студенты.Mail) ||
+                   _context.Студенты.Any(e => e.Mail == студенты.Mail) ||
+                   _context.Пользователь.Any(f => f.Mail == студенты.Mail))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Такой почтовый адрес уже зарегестрирован" });
+                }
+
                 int passwordHesh = calcHesh(студенты.Пароль);
                 студенты.Пароль = passwordHesh.ToString();
 
@@ -211,6 +203,65 @@ namespace WebLab.Controllers
             }
 
             return result;
+        }
+
+        public async Task<IActionResult> StudentsByGroup(int? id, string? name)
+        {
+            if(id == null)
+            {
+                return RedirectToAction("Index", "Группы");
+            }
+
+            ViewBag.CategoryName = name;
+            ViewBag.CategoryId = id;
+
+            var studentsByGroup = _context.Студенты.Where(e => e.ГруппаId == id);
+
+            return View(await studentsByGroup.ToListAsync());
+        }
+
+        public async Task<IActionResult> StudentsByTask(int? id)
+        {
+            if(id == null)
+            {
+                return RedirectToAction("Index", "Задачи");
+            }
+
+            ViewBag.CategoryName = id;
+            ViewBag.CategoryId = id;
+            
+            var studentsByTask = _context.Студенты.Where(e => _context.СтудентЗадача.Any(f => f.ЗадачаId == id && f.СтудентId == e.Mail)).Include(e => e.Группа).Include(e => e.Группа.Вуз);    
+
+            return View(await studentsByTask.ToListAsync());
+        }
+
+        public async Task<IActionResult> StudentTask(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var студент = await _context.Студенты
+                .FirstOrDefaultAsync(m => m.Mail == id);
+            if (студент == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("TasksByStudent", "Задачи", new { id = студент.Mail });
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
         }
     }
 }

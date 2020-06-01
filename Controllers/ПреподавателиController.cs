@@ -58,8 +58,16 @@ namespace WebLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mail,Фио,Пароль,ВузId")] Преподаватели преподаватели)
         {
+
             if (ModelState.IsValid)
             {
+                if(_context.Преподаватели.Any(d => d.Mail == преподаватели.Mail) ||
+                   _context.Студенты.Any(e => e.Mail == преподаватели.Mail)||
+                   _context.Пользователь.Any(f => f.Mail == преподаватели.Mail))
+                {
+                    return RedirectToAction("ErrorScreen", "Преподаватели", new { textOfError = "Такой почтовый адрес уже зарегестрирован" });
+                }
+                
                 int passwordHesh = calcHesh(преподаватели.Пароль);
                 преподаватели.Пароль = passwordHesh.ToString();
 
@@ -195,6 +203,33 @@ namespace WebLab.Controllers
             }
 
             return result;
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
+        }
+
+        public async Task<IActionResult> LectorsByUniv(int? id, string? name)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Вузы");
+            }
+
+            ViewBag.CategoryName = name;
+            ViewBag.CategoryId = id;
+
+            var lectorsByUniv = _context.Преподаватели.Where(e => e.ВузId == id);
+
+            return View(await lectorsByUniv.ToListAsync());
         }
     }
 }

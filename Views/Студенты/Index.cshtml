@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Группа)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Группа.Вуз)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -37,8 +40,12 @@
                 @Html.DisplayFor(modelItem => item.Группа.Название)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Группа.Вуз.НазваниеВуза)
+            </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Mail">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Mail">Details</a> |
+                <a asp-action="StudentTask" asp-route-id="@item.Mail">Tasks taken by this Student</a> |
                 <a asp-action="Delete" asp-route-id="@item.Mail">Delete</a>
             </td>
         </tr>

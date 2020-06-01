@@ -57,6 +57,11 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.Вузы.Any(e => e.НазваниеВуза == вузы.НазваниеВуза && e.Id != вузы.Id))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "ВУЗ с таким названием уже существует" });
+                }
+
                 _context.Add(вузы);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -90,6 +95,11 @@ namespace WebLab.Controllers
             if (id != вузы.Id)
             {
                 return NotFound();
+            }
+
+            if(_context.Вузы.Any(e => e.НазваниеВуза == вузы.НазваниеВуза && e.Id != вузы.Id))
+            {
+                return RedirectToAction("ErrorScreen", new { textOfError = "ВУЗ с таким названием уже существует" });
             }
 
             if (ModelState.IsValid)
@@ -147,6 +157,52 @@ namespace WebLab.Controllers
         private bool ВузыExists(int id)
         {
             return _context.Вузы.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if(textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
+        }
+
+        public async Task<IActionResult> DetailsLectors(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var вузы = await _context.Вузы
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (вузы == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("LectorsByUniv", "Преподаватели", new { id = вузы.Id, name = вузы.НазваниеВуза });
+        }
+
+        public async Task<IActionResult> DetailsGroups(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var вузы = await _context.Вузы
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (вузы == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("GroupByUniv", "Группы", new { id = вузы.Id, name = вузы.НазваниеВуза });
         }
     }
 }

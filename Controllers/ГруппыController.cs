@@ -34,7 +34,6 @@ namespace WebLab.Controllers
             }
 
             var группы = await _context.Группы
-                .Include(г => г.Вуз)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (группы == null)
             {
@@ -58,8 +57,14 @@ namespace WebLab.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Название,ВузId")] Группы группы)
         {
+
             if (ModelState.IsValid)
             {
+                if(_context.Группы.Any(e => e.Название == группы.Название && e.ВузId == группы.ВузId && e.Id != группы.Id))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Такая группа в этом ВУЗе" });
+                }
+
                 _context.Add(группы);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,6 +104,11 @@ namespace WebLab.Controllers
 
             if (ModelState.IsValid)
             {
+                if (_context.Группы.Any(e => e.Название == группы.Название && e.ВузId == группы.ВузId && e.Id != группы.Id))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Такая группа в этом ВУЗе" });
+                }
+
                 try
                 {
                     _context.Update(группы);
@@ -154,6 +164,33 @@ namespace WebLab.Controllers
         private bool ГруппыExists(int id)
         {
             return _context.Группы.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
+        }
+
+        public async Task<IActionResult> GroupByUniv(int? id, string? name)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Вузы");
+            }
+
+            ViewBag.CategoryName = name;
+            ViewBag.CategoryId = id;
+
+            var GroupsByUniv = _context.Группы.Where(e => e.ВузId == id).OrderBy(e => e.Название);
+
+            return View(await GroupsByUniv.ToListAsync());
         }
     }
 }

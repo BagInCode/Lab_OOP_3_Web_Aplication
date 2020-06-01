@@ -48,7 +48,7 @@ namespace WebLab.Controllers
         // GET: СтудентЗадача/Create
         public IActionResult Create()
         {
-            ViewData["ЗадачаId"] = new SelectList(_context.Задачи, "Id", "Место");
+            ViewData["ЗадачаId"] = new SelectList(_context.Задачи, "Id", "Id");
             ViewData["СтудентId"] = new SelectList(_context.Студенты, "Mail", "Mail");
             return View();
         }
@@ -62,6 +62,27 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.СтудентЗадача.Any(e => e.СтудентId == студентЗадача.СтудентId &&
+                                                    e.ЗадачаId == студентЗадача.ЗадачаId &&
+                                                    e.Id != студентЗадача.Id))
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Даный Студент уже принял к исполнению даную Задачу" });
+                }
+
+                var task = _context.Задачи.Find(студентЗадача.ЗадачаId);
+                var script = _context.Сценарии.Find(task.СценарийId);
+                int countActors = script.КВоАктёров;
+
+                if (_context.СтудентЗадача.Where(f => f.ЗадачаId == студентЗадача.ЗадачаId).Count() >= countActors)
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Все роли для этой Задачи уже заняты" });
+                }
+
+                if (task.Дата < DateTime.Now)
+                {
+                    return RedirectToAction("ErrorScreen", new { textOfError = "Вы опоздали, данная задача уже в прошлом" });
+                }
+
                 _context.Add(студентЗадача);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -160,6 +181,18 @@ namespace WebLab.Controllers
         private bool СтудентЗадачаExists(int id)
         {
             return _context.СтудентЗадача.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Text = textOfError;
+
+            return View();
         }
     }
 }

@@ -161,5 +161,52 @@ namespace WebLab.Controllers
         {
             return _context.Задачи.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> DetailsStudents(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var задачи = await _context.Задачи
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (задачи == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction("StudentsByTask", "Студенты", new { id = задачи.Id});
+        }
+
+        public async Task<IActionResult> TasksByUser(string? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Пользователь");
+            }
+
+            ViewBag.CategoryName = id;
+            ViewBag.CategoryId = id;
+
+            var tasksByUser = _context.Задачи.Where(e => e.ПользовательId == id).Include(e => e.Пользователь).Include(e => e.Сценарий).OrderByDescending(e => e.Дата);
+
+            return View(await tasksByUser.ToListAsync());
+        }
+
+        public async Task<IActionResult> TasksByStudent(string? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Студенты");
+            }
+
+            ViewBag.CategoryName = id;
+            ViewBag.CategoryId = id;
+
+            var tasksByStudent = _context.Задачи.Where(e => _context.СтудентЗадача.Any(f => f.ЗадачаId == e.Id && f.СтудентId == id)).Include(e => e.Пользователь).Include(e => e.Сценарий).OrderByDescending(e => e.Дата);
+
+            return View(await tasksByStudent.ToListAsync());
+        }
     }
 }
