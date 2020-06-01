@@ -25,6 +25,21 @@ namespace WebLab.Controllers
             return View(await labOOPContext.ToListAsync());
         }
 
+        public async Task<IActionResult> StudentsByGroup(int? id, string? name)
+        {
+            if(id == null)
+            {
+                return RedirectToAction("Index", "Группы");
+            }
+
+            ViewBag.CategoryName = name;
+            ViewBag.CategoryId = id;
+
+            var studentsByGroup = _context.Студенты.Where(e => e.ГруппаId == id);
+
+            return View(await studentsByGroup.ToListAsync());
+        }
+
         // GET: Студенты/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -60,7 +75,7 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
-                int passwordHesh = студенты.Пароль.GetHashCode();
+                int passwordHesh = calcHesh(студенты.Пароль);
                 студенты.Пароль = passwordHesh.ToString();
 
                 _context.Add(студенты);
@@ -106,7 +121,7 @@ namespace WebLab.Controllers
                 {
                     if(needToCalcHesh(студенты.Пароль))
                     {
-                        int passwordHesh = студенты.Пароль.GetHashCode();
+                        int passwordHesh = calcHesh(студенты.Пароль);
                         студенты.Пароль = passwordHesh.ToString();
                     }
 
@@ -169,7 +184,7 @@ namespace WebLab.Controllers
         {
             if (value[0] != '-' && (value[0] < '0' || value[0] > '9'))
             {
-                return false;
+                return true;
             }
 
             for (int i = 1; i < value.Length; i++)
@@ -181,6 +196,21 @@ namespace WebLab.Controllers
             }
 
             return false;
+        }
+
+        private int calcHesh(string str)
+        {
+            int key = 2147483647;
+            int step = 1;
+            int result = 0;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                result = result + (str[i] - i) * step;
+                step *= key;
+            }
+
+            return result;
         }
     }
 }

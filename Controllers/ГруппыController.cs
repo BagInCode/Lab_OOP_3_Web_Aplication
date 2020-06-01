@@ -41,7 +41,7 @@ namespace WebLab.Controllers
                 return NotFound();
             }
 
-            return View(группы);
+            return RedirectToAction("StudentsByGroup","Студенты",new { id = группы.Id, name = группы.Название});
         }
 
         // GET: Группы/Create

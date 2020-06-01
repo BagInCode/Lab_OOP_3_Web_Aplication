@@ -60,7 +60,7 @@ namespace WebLab.Controllers
         {
             if (ModelState.IsValid)
             {
-                int passwordHesh = преподаватели.Пароль.GetHashCode();
+                int passwordHesh = calcHesh(преподаватели.Пароль);
                 преподаватели.Пароль = passwordHesh.ToString();
 
                 _context.Add(преподаватели);
@@ -106,7 +106,7 @@ namespace WebLab.Controllers
                 {
                     if(needToCalcHesh(преподаватели.Пароль))
                     {
-                        int passwordHesh = преподаватели.Пароль.GetHashCode();
+                        int passwordHesh = calcHesh(преподаватели.Пароль);
                         преподаватели.Пароль = passwordHesh.ToString();
                     }
 
@@ -169,7 +169,7 @@ namespace WebLab.Controllers
         {
             if(value[0] != '-' && (value[0] < '0' || value[0] > '9'))
             {
-                return false;
+                return true;
             }
 
             for (int i = 1; i < value.Length; i++)
@@ -181,6 +181,20 @@ namespace WebLab.Controllers
             }
 
             return false;
+        }
+        private int calcHesh(string str)
+        {
+            int key = 2147483647;
+            int step = 1;
+            int result = 0;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                result = result + (str[i] - i) * step;
+                step *= key;
+            }
+
+            return result;
         }
     }
 }
