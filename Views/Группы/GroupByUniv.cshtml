@@ -7,7 +7,8 @@
 <h1>Группы в ВУЗе @ViewBag.CategoryName</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="text-decoration-none" asp-action="Create">Create New</a> |
+    <a class="text-decoration-none" asp-action="Index" , asp-controller="Вузы">To University List</a>
 </p>
 <table class="table">
     <thead>
@@ -26,9 +27,9 @@
                     @Html.DisplayFor(modelItem => item.Название)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

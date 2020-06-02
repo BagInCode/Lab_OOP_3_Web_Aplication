@@ -7,7 +7,8 @@
 <h1>Студенты группы @ViewBag.CategoryName</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="text-decoration-none" asp-action="Create">Create New</a> |
+    <a class="text-decoration-none" asp-action="Index" asp-controller="Группы">To Group List</a>
 </p>
 <table class="table">
     <thead>
@@ -32,10 +33,10 @@
                     @Html.DisplayFor(modelItem => item.Фио)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Mail">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Mail">Details</a> |
-                    <a asp-action="StudentTask" asp-route-id="@item.Mail">Tasks taken by this Student</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Mail">Delete</a>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Mail">Edit</a> |
+                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@item.Mail">Details</a> |
+                    <a class="text-decoration-none" asp-action="StudentTask" asp-route-id="@item.Mail">Tasks taken by this Student</a> |
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Mail">Delete</a>
                 </td>
             </tr>
         }
