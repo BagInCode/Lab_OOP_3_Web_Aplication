@@ -65,9 +65,9 @@ namespace WebLab.Controllers
                    _context.Студенты.Any(e => e.Mail == преподаватели.Mail)||
                    _context.Пользователь.Any(f => f.Mail == преподаватели.Mail))
                 {
-                    return RedirectToAction("ErrorScreen", "Преподаватели", new { textOfError = "Такой почтовый адрес уже зарегестрирован" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Такой почтовый адрес уже зарегестрирован", controllerName = "Преподаватели" });
                 }
-                
+
                 int passwordHesh = calcHesh(преподаватели.Пароль);
                 преподаватели.Пароль = passwordHesh.ToString();
 
@@ -203,18 +203,6 @@ namespace WebLab.Controllers
             }
 
             return result;
-        }
-
-        public async Task<IActionResult> ErrorScreen(string? textOfError)
-        {
-            if (textOfError == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.Text = textOfError;
-
-            return View();
         }
 
         public async Task<IActionResult> LectorsByUniv(int? id, string? name)

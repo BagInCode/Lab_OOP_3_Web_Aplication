@@ -59,7 +59,7 @@ namespace WebLab.Controllers
             {
                 if (_context.Вузы.Any(e => e.НазваниеВуза == вузы.НазваниеВуза && e.Id != вузы.Id))
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "ВУЗ с таким названием уже существует" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "ВУЗ с таким названием уже существует", controllerName = "Вузы" });
                 }
 
                 _context.Add(вузы);
@@ -99,7 +99,7 @@ namespace WebLab.Controllers
 
             if(_context.Вузы.Any(e => e.НазваниеВуза == вузы.НазваниеВуза && e.Id != вузы.Id))
             {
-                return RedirectToAction("ErrorScreen", new { textOfError = "ВУЗ с таким названием уже существует" });
+                return RedirectToAction("ErrorScreen", "Home", new { textOfError = "ВУЗ с таким названием уже существует", controllerName = "Вузы" });
             }
 
             if (ModelState.IsValid)
@@ -157,18 +157,6 @@ namespace WebLab.Controllers
         private bool ВузыExists(int id)
         {
             return _context.Вузы.Any(e => e.Id == id);
-        }
-
-        public async Task<IActionResult> ErrorScreen(string? textOfError)
-        {
-            if(textOfError == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.Text = textOfError;
-
-            return View();
         }
 
         public async Task<IActionResult> DetailsLectors(int? id)

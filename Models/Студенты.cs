@@ -21,6 +21,7 @@ namespace WebLab
         [Required(ErrorMessage = "Обязательное поле")]
         [MinLength(8, ErrorMessage = "Должен содержать 8+ символов")]
         [MaxLength(25, ErrorMessage = "Не более 25 символов")]
+        [DataType(DataType.Password)]
         public string Пароль { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]
         public int ГруппаId { get; set; }

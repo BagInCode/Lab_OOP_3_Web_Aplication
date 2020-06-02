@@ -66,7 +66,7 @@ namespace WebLab.Controllers
                                                     e.ЗадачаId == студентЗадача.ЗадачаId &&
                                                     e.Id != студентЗадача.Id))
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Даный Студент уже принял к исполнению даную Задачу" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Даный Студент уже принял к исполнению даную Задачу", controllerName = "СтудентЗадача" });
                 }
 
                 var task = _context.Задачи.Find(студентЗадача.ЗадачаId);
@@ -75,12 +75,12 @@ namespace WebLab.Controllers
 
                 if (_context.СтудентЗадача.Where(f => f.ЗадачаId == студентЗадача.ЗадачаId).Count() >= countActors)
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Все роли для этой Задачи уже заняты" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Все роли для этой Задачи уже заняты", controllerName = "СтудентЗадача" });
                 }
 
                 if (task.Дата < DateTime.Now)
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Вы опоздали, данная задача уже в прошлом" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Вы опоздали, данная задача уже в прошлом", controllerName = "СтудентЗадача" });
                 }
 
                 _context.Add(студентЗадача);
@@ -105,7 +105,7 @@ namespace WebLab.Controllers
             {
                 return NotFound();
             }
-            ViewData["ЗадачаId"] = new SelectList(_context.Задачи, "Id", "Место", студентЗадача.ЗадачаId);
+            ViewData["ЗадачаId"] = new SelectList(_context.Задачи, "Id", "Id", студентЗадача.ЗадачаId);
             ViewData["СтудентId"] = new SelectList(_context.Студенты, "Mail", "Mail", студентЗадача.СтудентId);
             return View(студентЗадача);
         }
@@ -181,18 +181,6 @@ namespace WebLab.Controllers
         private bool СтудентЗадачаExists(int id)
         {
             return _context.СтудентЗадача.Any(e => e.Id == id);
-        }
-
-        public async Task<IActionResult> ErrorScreen(string? textOfError)
-        {
-            if (textOfError == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.Text = textOfError;
-
-            return View();
         }
     }
 }

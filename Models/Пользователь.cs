@@ -21,6 +21,7 @@ namespace WebLab
         [Required(ErrorMessage = "Обязательное поле")]
         [MinLength(8, ErrorMessage = "Должен содержать 8+ символов")]
         [MaxLength(25, ErrorMessage = "Не более 25 символов")]
+        [DataType(DataType.Password)]
         public string Пароль { get; set; }
 
         public virtual ICollection<Задачи> Задачи { get; set; }

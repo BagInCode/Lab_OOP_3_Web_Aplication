@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WebLab.Controllers.HomeController>
+
+@{
+    ViewData["Title"] = "Ошибочка";
+}
+
+<h1>@ViewBag.Text</h1>
+
+<p>
+    <a asp-action="Index" asp-controller=@ViewBag.ControllerName>Назад к Списку</a>
+</p>

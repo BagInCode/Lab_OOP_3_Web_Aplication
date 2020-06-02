@@ -62,7 +62,7 @@ namespace WebLab.Controllers
             {
                 if(_context.Группы.Any(e => e.Название == группы.Название && e.ВузId == группы.ВузId && e.Id != группы.Id))
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Такая группа в этом ВУЗе" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Такая группа уже существует в этом ВУЗе", controllerName = "Группы" });
                 }
 
                 _context.Add(группы);
@@ -106,7 +106,7 @@ namespace WebLab.Controllers
             {
                 if (_context.Группы.Any(e => e.Название == группы.Название && e.ВузId == группы.ВузId && e.Id != группы.Id))
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Такая группа в этом ВУЗе" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Такая группа в этом ВУЗе", controllerName = "Группы" });
                 }
 
                 try
@@ -164,18 +164,6 @@ namespace WebLab.Controllers
         private bool ГруппыExists(int id)
         {
             return _context.Группы.Any(e => e.Id == id);
-        }
-
-        public async Task<IActionResult> ErrorScreen(string? textOfError)
-        {
-            if (textOfError == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.Text = textOfError;
-
-            return View();
         }
 
         public async Task<IActionResult> GroupByUniv(int? id, string? name)

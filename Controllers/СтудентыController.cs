@@ -34,7 +34,7 @@ namespace WebLab.Controllers
             }
 
             var студенты = await _context.Студенты
-                .Include(с => с.Группа)
+                .Include(с => с.Группа).Include(с => с.Группа.Вуз)
                 .FirstOrDefaultAsync(m => m.Mail == id);
             if (студенты == null)
             {
@@ -64,7 +64,7 @@ namespace WebLab.Controllers
                    _context.Студенты.Any(e => e.Mail == студенты.Mail) ||
                    _context.Пользователь.Any(f => f.Mail == студенты.Mail))
                 {
-                    return RedirectToAction("ErrorScreen", new { textOfError = "Такой почтовый адрес уже зарегестрирован" });
+                    return RedirectToAction("ErrorScreen", "Home", new { textOfError = "Такой почтовый адрес уже зарегестрирован", controllerName = "Студенты" });
                 }
 
                 int passwordHesh = calcHesh(студенты.Пароль);
@@ -146,7 +146,7 @@ namespace WebLab.Controllers
             }
 
             var студенты = await _context.Студенты
-                .Include(с => с.Группа)
+                .Include(с => с.Группа).Include(с => с.Группа.Вуз)
                 .FirstOrDefaultAsync(m => m.Mail == id);
             if (студенты == null)
             {
@@ -250,18 +250,6 @@ namespace WebLab.Controllers
             }
 
             return RedirectToAction("TasksByStudent", "Задачи", new { id = студент.Mail });
-        }
-
-        public async Task<IActionResult> ErrorScreen(string? textOfError)
-        {
-            if (textOfError == null)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.Text = textOfError;
-
-            return View();
         }
     }
 }

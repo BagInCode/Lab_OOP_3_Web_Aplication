@@ -16,7 +16,7 @@ namespace WebLab
         [MaxLength(100, ErrorMessage = "Длина до 250 символов")]
         public string Место { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]
-        [DateTimeValidator(ErrorMessage = "Укажите дату и время начиная от сечас и в течении 30 дней")]
+        [DateTimeValidator(ErrorMessage = "Укажите дату и время начиная от сейчас и в течении 30 дней")]
         public DateTime Дата { get; set; }
         [MaxLength(250, ErrorMessage = "Длина до 250 символов")]
         public string Описание { get; set; }

@@ -33,5 +33,18 @@ namespace WebLab.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public async Task<IActionResult> ErrorScreen(string? textOfError, string? controllerName)
+        {
+            if (textOfError == null)
+            {
+                return RedirectToAction("Index", controllerName);
+            }
+
+            ViewBag.Text = textOfError;
+            ViewBag.ControllerName = controllerName;
+
+            return View();
+        }
     }
 }
