@@ -28,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Сценарий)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Сценарий.КВоАктёров)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -49,6 +52,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Сценарий.Описание)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Сценарий.КВоАктёров)
                 </td>
                 <td>
                     <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

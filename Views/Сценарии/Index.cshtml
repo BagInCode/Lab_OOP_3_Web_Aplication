@@ -10,6 +10,7 @@
     <a class="text-decoration-none" asp-action="Create">Create New</a> |
     <a class="text-decoration-none" asp-action="Index" asp-controller="Home">To Main Page</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -23,20 +24,22 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.КВоАктёров)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Описание)
-            </td>
-            <td>
-                <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a class="text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.КВоАктёров)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Описание)
+                </td>
+                <td>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+

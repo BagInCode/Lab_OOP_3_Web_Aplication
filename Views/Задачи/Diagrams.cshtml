@@ -1,0 +1,60 @@
+﻿@model IEnumerable<WebLab.Задачи>
+
+@{
+    ViewData["Title"] = "Диаграмы";
+}
+
+<h1>Диаграмы</h1>
+
+<p>
+    <a class="text-decoration-none" asp-action="Index">To Tasks List</a> |
+</p>
+
+<div class="container">
+    <div id="chart1"></div>
+</div>
+<div class="container">
+    <div id="chart2"></div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart1);
+
+        function drawChart1() {
+            $.get('/api/Charts/JsonDataTasksByScripts', function (jsonData1) {
+                data = google.visualization.arrayToDataTable(jsonData1, false);
+                var option = {
+                    title: "Соотношение количества задач по сценариям",
+                    width: 500,
+                    heigh: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart1'));
+                chart.draw(data, option);
+            })
+        }
+    </script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart2);
+
+        function drawChart2() {
+            $.get('/api/Charts/JsonDataTasksByMonth', function (jsonData2) {
+                data = google.visualization.arrayToDataTable(jsonData2, false);
+                var option = {
+                    title: "Соотношение количества задач по месяцам",
+                    width: 500,
+                    heigh: 400
+                };
+                chart = new google.visualization.PieChart(document.getElementById('chart2'));
+                chart.draw(data, option);
+            })
+        }
+    </script>
+}
