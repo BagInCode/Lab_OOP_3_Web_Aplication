@@ -251,5 +251,12 @@ namespace WebLab.Controllers
 
             return RedirectToAction("TasksByStudent", "Задачи", new { id = студент.Mail });
         }
+
+        public async Task<IActionResult> Diagrams(string? Id)
+        {
+            ViewBag.TempId = Id;
+
+            return View();
+        }
     }
 }

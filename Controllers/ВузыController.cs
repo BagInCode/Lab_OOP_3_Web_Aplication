@@ -147,7 +147,7 @@ namespace WebLab.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        {      
             var вузы = await _context.Вузы.FindAsync(id);
             _context.Вузы.Remove(вузы);
             await _context.SaveChangesAsync();

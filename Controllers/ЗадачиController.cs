@@ -208,5 +208,10 @@ namespace WebLab.Controllers
 
             return View(await tasksByStudent.ToListAsync());
         }
+
+        public async Task<IActionResult> Diagrams()
+        {
+            return View();
+        }
     }
 }
