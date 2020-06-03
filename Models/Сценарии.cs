@@ -14,6 +14,7 @@ namespace WebLab
         public int Id { get; set; }
         [Display(Name = "Количество актёров")]
         [Required(ErrorMessage = "Обязательное поле")]
+        [GreatherThanZeroValidator(ErrorMessage = "Число актёров должно быть положительным")]
         public int КВоАктёров { get; set; }
         [MaxLength(250, ErrorMessage = "Длина до 250 символов")]
         public string Описание { get; set; }

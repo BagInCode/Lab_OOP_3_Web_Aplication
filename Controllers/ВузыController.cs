@@ -5,7 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ClosedXML.Attributes;
+using ClosedXML.Excel;
+using ClosedXML.Utils;
 using WebLab;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace WebLab.Controllers
 {
@@ -191,6 +196,99 @@ namespace WebLab.Controllers
             }
 
             return RedirectToAction("GroupByUniv", "Группы", new { id = вузы.Id, name = вузы.НазваниеВуза });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(IFormFile fileExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (fileExcel != null)
+                {
+                    using (var stream = new FileStream(fileExcel.FileName, FileMode.Create))
+                    {
+                        await fileExcel.CopyToAsync(stream);
+
+                        using (XLWorkbook workBook = new XLWorkbook(stream, XLEventTracking.Disabled))
+                        {
+                            foreach (IXLWorksheet worksheet in workBook.Worksheets)
+                            {
+                                Вузы newUniv;
+                                var t = (from temp in _context.Вузы where temp.НазваниеВуза.Contains(worksheet.Name) select temp).ToList();
+
+                                if (t.Count > 0)
+                                {
+                                    newUniv = t[0];
+                                }
+                                else
+                                {
+                                    newUniv = new Вузы();
+                                    newUniv.НазваниеВуза = worksheet.Name;
+                                    _context.Вузы.Add(newUniv);
+
+                                    await _context.SaveChangesAsync();
+
+                                    newUniv = _context.Вузы.FirstOrDefault(e => e.НазваниеВуза == worksheet.Name);
+                                }
+
+                                foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
+                                {
+                                    try
+                                    {
+                                        Группы group = new Группы();
+                                        group.ВузId = newUniv.Id;
+                                        group.Название = row.Cell(1).Value.ToString();
+
+                                        if (!_context.Группы.Any(e => e.ВузId == newUniv.Id && e.Название == group.Название))
+                                        {
+                                            _context.Группы.Add(group);
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        throw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public ActionResult Export(int? id)
+        {
+            using (XLWorkbook workbook = new XLWorkbook(XLEventTracking.Disabled))
+            {
+                var group = _context.Группы.Where(e => e.ВузId == id).ToList();
+
+                var worksheet = workbook.Worksheets.Add(_context.Вузы.Find(id).НазваниеВуза);
+
+                worksheet.Cell("A1").Value = "Название";
+                worksheet.Row(1).Style.Font.Bold = true;
+
+                for (int i = 0; i < group.Count; i++)
+                {
+                    worksheet.Cell(i + 2, 1).Value = group[i].Название;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Flush();
+
+                    return new FileContentResult(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    {
+                        FileDownloadName = $"WebLab_{DateTime.UtcNow.ToShortDateString()}.xlsx"
+                    };
+                }
+            }
         }
     }
 }

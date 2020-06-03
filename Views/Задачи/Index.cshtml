@@ -11,6 +11,7 @@
     <a class="text-decoration-none" asp-action="Index" asp-controller="Home">To Main Page</a> |
     <a class="text-decoration-none" asp-action="Diagrams">To Diagrams</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -39,7 +40,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)

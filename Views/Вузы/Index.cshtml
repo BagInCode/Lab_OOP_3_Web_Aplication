@@ -10,6 +10,18 @@
     <a class="text-decoration-none" asp-action="Create">Create New</a> |
     <a class="text-decoration-none" asp-action="Index" asp-controller="Home">To Main Page</a>
 </p>
+
+<div>
+    @using (Html.BeginForm("Import", "Вузы", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Загрузить Excel-файл:
+            <input type="file" name="fileExcel" id="fileExcel" /> <input type="submit" value="Завантажити" />
+
+        </div>
+    }
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -20,18 +32,20 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.НазваниеВуза)
-            </td>
-            <td>
-                <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a class="text-decoration-none" asp-action="DetailsLectors" asp-route-id="@item.Id">Details about Lectors</a> |
-                <a class="text-decoration-none" asp-action="DetailsGroups" asp-route-id="@item.Id">Details about Groups</a> |
-                <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.НазваниеВуза)
+                </td>
+                <td>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class="text-decoration-none" asp-action="DetailsLectors" asp-route-id="@item.Id">Details about Lectors</a> |
+                    <a class="text-decoration-none" asp-action="DetailsGroups" asp-route-id="@item.Id">Details about Groups</a> |
+                    <a class="text-decoration-none" asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                    <a class="text-decoration-none" asp-action="Export" asp-route-id="@item.Id">Download</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
